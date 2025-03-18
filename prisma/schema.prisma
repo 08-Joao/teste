@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int            @id @unique @default(autoincrement())
+  nome         String         @default("")
+  email        String         @unique
+  senha        String
+  subscription Subscription[]
+  payments     Payment[]
+  billingInfo  BillingInfo?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model SubscriptionPlan {
+  id            Int            @id @unique @default(autoincrement())
+  nome          String
+  valor         Float
+  duracaoDias   Int
+  subscriptions Subscription[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Subscription {
+  id                Int                 @id @default(autoincrement())
+  userId            Int
+  planId            Int
+  inicio            DateTime
+  renovacao         DateTime?
+  termino           DateTime?
+  status            SubscriptionStatus
+  user              User                @relation(fields: [userId], references: [id])
+  plan              SubscriptionPlan    @relation(fields: [planId], references: [id])
+  subscriptionEvent SubscriptionEvent[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  userId          Int
+  valor           Float
+  dataDeExecucao  DateTime?
+  dataDeReembolso DateTime?
+  status          PaymentStatus
+  user            User          @relation(fields: [userId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model BillingInfo {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  endereco  String
+  cidade    String
+  estado    String
+  cep       String
+  pais      String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SubscriptionEvent {
+  id             Int          @id @default(autoincrement())
+  subscriptionId Int
+  tipo           EventType
+  data           DateTime     @default(now())
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+enum SubscriptionStatus {
+  ATIVO
+  CANCELADO
+  EXPIRADO
+  PENDENTE
+}
+
+enum PaymentStatus {
+  PENDENTE
+  APROVADO
+  CANCELADO
+  REEMBOLSADO
+}
+
+enum EventType {
+  INICIO
+  RENOVACAO
+  CANCELAMENTO
+  EXPIRACAO
+}
