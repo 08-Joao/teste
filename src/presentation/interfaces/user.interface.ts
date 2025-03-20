@@ -1,21 +1,32 @@
-import { BillingInfo } from "./billingInfor.interface";
+import { BillingInfo } from "./billingInfo.interface";
 import { Payment } from "./payment.interface";
 import { Subscription } from "./subscription.interface";
 
 export interface User {
   id: number;
-  nome: string;
+  name: string;
   email: string;
-  senha: string;
+  password: string;
   subscription?: Subscription[];
   payments?: Payment[];
   billingInfo?: BillingInfo;
+  isAdmin: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface UserInput {
-  nome: string;
+  name: string;
   email: string;
-  senha: string;
+  password: string;
+}
+
+export interface ILoginUser {
+  email: string;
+  password: string;
+}
+
+export interface ILoginUserResponse{
+  token: string;
+  user: User;
 }

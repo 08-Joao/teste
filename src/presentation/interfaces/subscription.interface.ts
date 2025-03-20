@@ -1,3 +1,4 @@
+import { SubscriptionEvent } from "./subscriptionEvent.interface";
 import { SubscriptionPlan } from "./subscriptionPlan.interface";
 import { User } from "./user.interface";
 
@@ -9,7 +10,7 @@ export interface Subscription {
   status: string;
   user: User;
   plan: SubscriptionPlan;
-  subscriptionEvent: null;
+  subscriptionEvent: SubscriptionEvent[];
   createdAt?: Date;
   updatedAt?: Date;
 }

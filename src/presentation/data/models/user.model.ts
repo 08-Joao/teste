@@ -21,6 +21,10 @@ export default class UserModel {
         return this.prisma.User.findUniqueOrThrow({ where: {id} });
     }
 
+    async getUserByEmail(email: string): Promise<User> {
+        return await this.prisma.User.findUniqueOrThrow({ where: { email } });
+    }
+
     async updateUser(id: number, data: UserInput): Promise<User> {
         return this.prisma.User.update({ where: { id }, data });
     }
